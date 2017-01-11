@@ -1,0 +1,1 @@
+This project demonstrates usage of the `AccValidation` type, with and without the `ApplicativeDo` extension. 

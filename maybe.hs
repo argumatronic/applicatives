@@ -36,7 +36,7 @@ mkPerson name' age' pl' =
           Just langy ->
               plCheck (Person namae aged langy)
 
--- Do syntax isn't just for IO.
+-- `do` syntax isn't just for IO.
 
 mkPerson' :: String -> Int -> String -> Maybe Person
 mkPerson' name' age' pl' = do
@@ -44,6 +44,9 @@ mkPerson' name' age' pl' = do
   aged <- noNegative age'
   langy <- noEmpty pl'
   plCheck (Person namae aged langy)
+
+-- monad context even though there's no IO here, 
+-- because later computations depend on the result of earlier ones
 
 -- mkPerson "Simon" 45 "Scala"
 -- mkPerson "Chris" (-30) "Scala"

@@ -86,18 +86,6 @@ doSomething' n = do
 - allows use of `do` syntax with applicatives
 
 
-# Alternative
-
-- a monoid on applicative functors!
-
-```haskell
-class Applicative f => Alternative f where  
-    -- | The identity of '<|>'  
-    empty :: f a  
-    -- | An associative binary operation  
-    (<|>) :: f a -> f a -> f a  
-```
-
 # Hour 2: Electric Boogaloo
 
 In this hour, we'll be working on a small project with the optparse-applicative library.

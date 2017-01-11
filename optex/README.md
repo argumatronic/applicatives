@@ -1,0 +1,1 @@
+This was just a small demonstration of how the `optparse-applicative` library allows us to parse command line arguments and how to put that code together.

@@ -37,7 +37,3 @@ main :: IO ()
 main = do
     command <- execParser parserInfoCommand
     print command
-
-
-
--- stack exec -- address show julie

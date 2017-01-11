@@ -22,28 +22,23 @@ display maybeAna =
         Just False -> putStrLn "These are not anagrams."
         Just True  -> putStrLn "These words are anagrams."
 
+-- monadic do-within-let
+main :: IO ()
+main = do
+    putStrLn "Please enter a word."
+    firstWord <- getLine
+    putStrLn "Please enter a second word."
+    secondWord <- getLine
+    let maybeAna = do
+            first  <- maybeWord firstWord
+            second <- maybeWord secondWord
+            return $ isAnagram first second
+    display maybeAna
 
--- main :: IO ()
--- main = do
---     putStrLn "Please enter a word."
---     firstWord <- getLine
---     putStrLn "Please enter a second word."
---     secondWord <- getLine
---     let maybeAna = do
---             first  <- maybeWord firstWord
---             second <- maybeWord secondWord
---             return $ isAnagram first second
---     display maybeAna
-
-
-
-
+-- but the monadic context isn't really necessary
 
 
-
-
-
-
+-- so we can rewrite that with applicative
 main :: IO ()
 main = do
     putStrLn "Please enter a word."
@@ -55,6 +50,7 @@ main = do
                    <*> (maybeWord secondWord)
     display maybeAna
 
+-- we can even rewrite it on one line if we're into that kind of thing
 main :: IO ()
 main = do
     putStrLn "Please enter a word."

@@ -1,0 +1,1 @@
+This project is the argument parsing portion of a larger command line address book project, similar to ppladdressbook. It relies on the library `optparse-applicative` which involves *mostly* applicative parsing. 
