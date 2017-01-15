@@ -50,3 +50,11 @@ mkPerson' name' age' pl' = do
 
 -- mkPerson "Simon" 45 "Scala"
 -- mkPerson "Chris" (-30) "Scala"
+
+-- another version with applicative and bind
+mkPer :: String -> Int -> String -> Maybe Person
+mkPer name' age' pl' = 
+  Person <$> (nonEmpty name') 
+         <*> (nonNegative age') 
+         <*> (nonEmpty pl') 
+  >>= plCheck
