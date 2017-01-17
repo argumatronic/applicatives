@@ -1,3 +1,5 @@
+import Data.Monoid
+
 data Person = Person {
       name   :: String
     , age    :: Int
@@ -48,13 +50,14 @@ mkPerson' name' age' pl' = do
 -- monad context even though there's no IO here, 
 -- because later computations depend on the result of earlier ones
 
--- mkPerson "Simon" 45 "Scala"
--- mkPerson "Chris" (-30) "Scala"
+mkPerson "Simon" 45 "Scala"
+mkPerson "Chris" (-30) "Scala"
 
--- another version with applicative and bind
+another version with applicative and bind
 mkPer :: String -> Int -> String -> Maybe Person
 mkPer name' age' pl' = 
   Person <$> (nonEmpty name') 
          <*> (nonNegative age') 
          <*> (nonEmpty pl') 
   >>= plCheck
+
