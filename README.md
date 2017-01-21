@@ -10,11 +10,12 @@ LambdaConf Winter Retreat, January 2017
  
 ## Applicative  
 - another type of functor, different from Functor or Monad  
-- refactor.hs  
+- anagramMaybe.hs  
 - compare monadic and applicative versions  
 
 ## AccValidation  
-- datatype from `validation` library  
+- datatype from `validation` library 
+- anagramEither.hs 
 - like `Either` but can accumulate error messages on the left  
 - `acc` project
 

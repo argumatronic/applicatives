@@ -25,36 +25,39 @@ mkPerson :: String
             -> String
             -> Maybe Person
 mkPerson name' age' pl' =
+  -- have the ' to distinguish from the record-accessor
+  -- functions in the record datatype
   case noEmpty name' of
    Nothing -> Nothing
-   Just namae ->
+   Just name' ->
      case noNegative age' of
       Nothing -> Nothing
-      Just aged ->
+      Just age' ->
         case noEmpty pl' of
           Nothing -> Nothing
-          Just langy ->
-              plCheck (Person namae aged langy)
+          Just pl' ->
+              plCheck (Person name' age' pl')
 
--- `do` syntax isn't just for IO.
+-- `do` syntax isn't just for IO; 
+-- Maybe is also a Monad
+-- and later computations (specifically plCheck)
+-- do depend on results of earlier ones
 
-mkPerson' :: String -> Int -> String -> Maybe Person
-mkPerson' name' age' pl' = do
-  namae <- noEmpty name'
-  aged <- noNegative age'
-  langy <- noEmpty pl'
-  plCheck (Person namae aged langy)
-
--- monad context even though there's no IO here, 
--- because later computations depend on the result of earlier ones
+-- mkPerson' :: String -> Int -> String -> Either String Person
+-- mkPerson' name' age' pl' = do
+--   namae <- noEmpty name'
+--   aged <- noNegative age'
+--   langy <- noEmpty pl'
+--   plCheck (Person name' age' pl')
 
 -- mkPerson "Simon" 45 "Scala"
 -- mkPerson "Chris" (-30) "Scala"
 
 -- another version with applicative and bind
+
 mkPer :: String -> Int -> String -> Maybe Person
 mkPer name' age' pl' = 
-  Person <$> (nonEmpty name') 
-         <*> (nonNegative age') 
-         <*> (nonEmpty pl') 
+  Person <$> (noEmpty name') 
+         <*> (noNegative age') 
+         <*> (noEmpty pl') 
   >>= plCheck

@@ -40,9 +40,6 @@ fmap :: Functor f => (a ->  b)  -> f a -> f b
 join :: Monad m => m (m a) -> m a
 ```
 
-# Monad
-
-
 # Applicative  
 
 ![I have altered the Functor.](dog-vader.jpg)
