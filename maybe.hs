@@ -5,20 +5,19 @@ data Person = Person {
    } deriving (Eq, Show)
 
 nonEmpty :: String -> Maybe String
+-- pattern match; yes, there are other ways to do it
 nonEmpty ""  = Nothing
 nonEmpty str = Just str
 
 nonNegative :: Int -> Maybe Int
-nonNegative n | n >= 0 = Just n
-             | otherwise = Nothing
+nonNegative n = if n >= 0 then Just n else Nothing
 
 plCheck :: Person -> Maybe Person
 plCheck c =
-  let p = pl c
-      n = name c
-  in if n == "Simon" && (p /= "Haskell")
+  if (name c) == "Simon" && ((pl c) /= "Haskell")
      then Nothing
      else Just c
+  -- `name` and `pl` here are those record accessor functions from our record type
 
 mkPerson :: String
             -> Int
@@ -37,108 +36,43 @@ mkPerson name' age' pl' =
           Nothing -> Nothing
           Just pl'' ->
               plCheck (Person name'' age'' pl'')
+          -- note that if any of the above returns a `Nothing`, we will never make it to the `plCheck`
 
 -- `do` syntax isn't just for IO; 
 -- Maybe is also a Monad
 -- and later computations (specifically plCheck)
 -- do depend on results of earlier ones
-
-
--- mkPerson' :: String -> Int -> String -> Either String Person
--- mkPerson' name' age' pl' = do
---   namae <- noEmpty name'
---   aged <- noNegative age'
---   langy <- noEmpty pl'
---   plCheck (Person name' age' pl')
-
+-- following is same as above, but ~monadic~
 mkPerson' :: String -> Int -> String -> Maybe Person
 mkPerson' name' age' pl' = do
-  namae <- nonEmpty name'
-  aged <- nonNegative age'
-  langy <- nonEmpty pl'
-  plCheck (Person namae aged langy)
+  name'' <- nonEmpty name'
+  age'' <- nonNegative age'
+  lang'' <- nonEmpty pl'
+  plCheck (Person name'' age'' lang'')
 
-plChk :: Person -> Either String Person
-plChk c =
-  let p = pl c
-      n = name c
-  in if n == "Simon" && (p /= "Haskell")
-     then Left "All Simons write Haskell."
-     else Right c
 
--- using Either instead of Maybe gives a better demonstration
--- of where it's failing and how it doesn't "see" any later error 
--- once it's already hit a Left case.
-mkPer :: String
-            -> Int
-            -> String
-            -> Either String Person
-mkPer name' age' pl' =
-  case nonEmpty name' of
-   Nothing -> Left "Empty name value."
-   -- if name is empty, it will tell us that
-   -- if it's not empty, it returns Just name and goes on to
-   -- the next check
-   Just named ->
-     case nonNegative age' of
-      Nothing -> Left "Negative age."
-      -- if a negative number, we get Nothing; otherwise, go on
-      Just aged ->
-        case nonEmpty pl' of
-          Nothing -> Left "Empty prog lang."
-          -- and again check for empty strings
-          Just lang ->
-              plChk (Person named aged lang)
+-- desugaring `do` with applicative and bind
+-- first we construct a Person value by applying the Person type constructor
+-- to the results of the three function/values and then pass that as the (m a) to (>>=)
+-- where the `m` is Maybe, and the (a -> m b) is plCheck (:: Person -> Maybe Person)
+mkPer' :: String -> Int -> String -> Maybe Person
+mkPer' name' age' pl' = 
+  Person <$> (nonEmpty name')   -- <$> is infix operator for `fmap`
+         <*> (nonNegative age') -- <*> is the applicative operator :: f (a -> b) -> f a -> f b
+         <*> (nonEmpty pl') 
+  >>= plCheck
+-- >>= is called "bind" and is the main operator in Monad :: m a -> (a -> m b) -> m b
 
--- monad context even though there's no IO here, 
--- because later computations depend on the result of earlier ones
-
--- mkPer "Simon" (-3) ""
--- Left "Negative age."
-
+-- this is overkill but if we factor out the applicative
+-- part, it's easier to see the intermediate type signature
 per :: String -> Int -> String -> Maybe Person
-per name' age' pl' = Person <$> (nonEmpty name') 
+per name' age' pl' = Person <$> (nonEmpty name')   
                             <*> (nonNegative age') 
                             <*> (nonEmpty pl')
 
--- desugaring `do` with applicative and bind
-mkPer' :: String -> Int -> String -> Maybe Person
-mkPer' name' age' pl' = 
-  -- Person <$> (nonEmpty name') 
-  --        <*> (nonNegative age') 
-  --        <*> (nonEmpty pl') 
-  per name' age' pl' >>= plCheck
-
-
-noEmpty :: String -> Either String String
-noEmpty ""  = Left "Empty string."
-noEmpty str = Right str
-
-noNegative :: Int -> Either String Int
-noNegative n | n >= 0 = Right n
-              | otherwise = Left "Negative age."
-
--- plChk :: Person -> Either String Person
--- plChk c =
---   let p = pl c
---       n = name c
---   in if n == "Simon" && (p /= "Haskell")
---      then Left "All Simons write Haskell."
---      else Right c
-
--- another version with applicative and bind
-
--- mkPer :: String -> Int -> String -> Maybe Person
--- mkPer name' age' pl' = 
---   Person <$> (noEmpty name') 
---          <*> (noNegative age') 
---          <*> (noEmpty pl') 
---   >>= plCheck
-
-mkP :: String -> Int -> String -> Either String Person
+mkP :: String -> Int -> String -> Maybe Person
 mkP name' age' pl' = 
-  Person <$> (noEmpty name') 
-         <*> (noNegative age') 
-         <*> (noEmpty pl') 
-  >>= plChk
+  per name' age' pl' >>= plCheck  
+
+
 
