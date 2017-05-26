@@ -108,6 +108,7 @@ mkPer' name' age' pl' =
   --        <*> (nonNegative age') 
   --        <*> (nonEmpty pl') 
   per name' age' pl' >>= plCheck
+  -- Maybe Person >>= (Person -> Maybe Person)
 
 
 noEmpty :: String -> Either String String

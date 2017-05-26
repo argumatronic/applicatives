@@ -31,8 +31,8 @@ main = do
     putStrLn "Please enter a second word."
     secondWord <- getLine
     let validAna = isAnagram 
-                   <$> (maybeWord firstWord) 
-                   <*> (maybeWord secondWord)
+                   <$> (maybeWord firstWord)  -- AccValidation [String] String
+                   <*> (maybeWord secondWord) 
     display validAna
 
 -- this one does not work because no Monad instance
