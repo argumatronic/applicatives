@@ -12,21 +12,33 @@ data Welcome = Welcome { name :: String
 
 runWithOptions :: Welcome -> IO ()
 runWithOptions opts =
-  putStrLn $ transform $
+  putStrLn $ transform $  -- try not to fret about the dollar sign; here it's just like wrapping everything to its right in parentheses
     "Enjoy the snow, " ++ name opts ++ "!"
   where
     transform = if excited opts then map toUpper else id
--- what to do if the options change
+-- switch to all caps if the "excited" option is True
 
 main :: IO ()
 main = execParser opts >>= runWithOptions
 -- execParser :: ParserInfo a -> IO a
   where
-    parser = Welcome <$> argument str (metavar "NAME")
+    parser = Welcome <$> argument str (metavar "NAME")  -- the metavar sets usage information
                      <*> switch (short 'e' <>
                                long "excited")
     opts = info parser mempty
 -- info :: Parser a -> InfoMod a -> ParserInfo a
+-- opts gives us a ParserInfo Welcome
+-- >>= :: Monad m => m a -> (a -> m b) -> m b
+-- execParser opts >>= runWithOptions
+-- takes opts (:: ParserInfo Welcome) and returns an IO Welcome value as the `m a` (IO is the m)
+-- runWithOptions needs the Welcome value from IO Welcome as its argument, returns an IO (), so it's (a -> m b) (IO is the m)
 
--- the metavar allows it to provide usage information to us
+
+-- to run
+-- ~/teaching/applicatives/optex$ stack exec -- optex "julie"
+-- Enjoy the snow, julie!
+-- ~/teaching/applicatives/optex$ stack exec -- optex "julie" -e
+-- ENJOY THE SNOW, JULIE!
+
 -- note: `help` isn't enabled here but can be
+

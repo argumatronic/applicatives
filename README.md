@@ -7,6 +7,7 @@ LambdaConf Winter Retreat, January 2017
 ## Monad!  
 - context dependency: earlier failures can short-circuit later code  
 - maybe.hs  
+- either.hs for comparison (this was mostly added after the talk, for the Austin meetup)
  
 ## Applicative  
 - another type of functor, different from Functor or Monad  

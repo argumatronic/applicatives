@@ -1,11 +1,14 @@
 module Main where
-  
+
 import Data.Char (isAlpha)
 import Data.List (sort)
 
 isAnagram :: String -> String -> Bool
 isAnagram xs ys = sort xs == sort ys
 
+-- this is all basically the same as the maybeAnagram version
+-- but this version gives us a nicer comparison to the AccValidation
+-- version that's coming next
 maybeWord :: String -> Either String String
 maybeWord xs = 
     case null xs of
@@ -36,7 +39,7 @@ main = do
     let maybeAna = do
             first  <- maybeWord firstWord
             second <- maybeWord secondWord
-            return $ isAnagram first second
+            return (isAnagram first second)
     display maybeAna
 
 -- but the monadic context isn't really necessary
